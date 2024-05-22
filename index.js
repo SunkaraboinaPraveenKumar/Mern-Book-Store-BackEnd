@@ -4,8 +4,9 @@ const port = process.env.PORT || 5000;
 const cors = require('cors');
 
 // Middle ware
+// Middle ware
 app.use(cors({
-  origin: ['https://mern-book-store-fronend.vercel.app','http://localhost:5000','https://mern-book-store-fronend.vercel.app/admin/dashboard','https://mern-book-store-back-end.vercel.app/','https://mern-book-store-fronend.vercel.app/admin/dashboard/upload','https://mern-book-store-fronend.vercel.app/admin/dashboard/manage','http://localhost:5000/all-books','http://localhost:5000/book/:id'],
+  origin: ['https://mern-book-store-frontend.vercel.app', 'http://localhost:5000'], // Adjust the port number if your React app is running on a different port
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
