@@ -5,7 +5,7 @@ const cors = require('cors');
 
 // Middle ware
 app.use(cors({
-  origin: ['https://mern-book-store-fronend.vercel.app','http://localhost:5000/all-books','http://localhost:5000/book/:id'],
+  origin: ['https://mern-book-store-fronend.vercel.app','http://localhost:5000','https://mern-book-store-fronend.vercel.app/admin/dashboard'],
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
