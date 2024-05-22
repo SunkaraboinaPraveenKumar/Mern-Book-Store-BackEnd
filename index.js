@@ -1,20 +1,21 @@
-const express=require('express');
-const app=express();
-const port=process.env.PORT||5000;
-const cors=require('cors');
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 5000;
+const cors = require('cors');
 
-
-//middle ware
-app.use(cors());
+// Middle ware
+app.use(cors({
+  origin: 'https://mern-book-store-fronend.vercel.app',
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
-app.get('/',(req,res)=>{
-    res.send('Hello World!')
+app.get('/', (req, res) => {
+  res.send('Hello World!')
 })
 
-
-//mongodb configuration
-
+// MongoDB configuration
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://mern-book-store:PZQN0WWFuxuxyvT6@todolist.1wqqadf.mongodb.net/?retryWrites=true&w=majority&appName=todoList";
 
@@ -31,61 +32,63 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    //create a collection of documents
-    const bookCollections= client.db("BookInventory").collection("books")
+    // Create a collection of documents
+    const bookCollections = client.db("BookInventory").collection("books")
 
-    //insert a book to the data base using post method
-    app.post('/upload-book',async (req,res)=>{
-        const data=req.body;
-        const result=await bookCollections.insertOne(data);
-        res.send(result)
+    // Insert a book into the database using POST method
+    app.post('/upload-book', async (req, res) => {
+      const data = req.body;
+      const result = await bookCollections.insertOne(data);
+      res.send(result)
     })
 
-    //get all books
-    app.get("/all-books",async (req,res)=>{
-        const books=bookCollections.find();
-        const result=await books.toArray();
-        res.send(result);
+    // Get all books
+    app.get("/all-books", async (req, res) => {
+      const books = bookCollections.find();
+      const result = await books.toArray();
+      res.send(result);
     })
-    //update a book data : patch or update methods
-    app.patch("/book/:id",async (req,res)=>{
-        const id=req.params.id;
-        // console.log(id)
-        const updateBookData=req.body;
-        const filter={_id:new ObjectId(id)};
-        const options={upsert:true};
 
-        const updateDoc={
-            $set:{
-                ...updateBookData
-            }
+    // Update a book's data: PATCH or UPDATE methods
+    app.patch("/book/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateBookData = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+
+      const updateDoc = {
+        $set: {
+          ...updateBookData
         }
-        //update
-        const result=await bookCollections.updateOne(filter,updateDoc,options);
-        res.send(result);
+      }
+      // Update
+      const result = await bookCollections.updateOne(filter, updateDoc, options);
+      res.send(result);
     })
 
-    //delete a book data
-    app.delete("/book/:id",async (req,res)=>{
-        const id=req.params.id;
-        const filter={_id:new ObjectId(id)};
-        const result= await bookCollections.deleteOne(filter);
-        res.send(result);
+    // Delete a book's data
+    app.delete("/book/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await bookCollections.deleteOne(filter);
+      res.send(result);
     });
-    //find by filtering by category
-    app.get("/all-books",async (req,res)=>{
-        let query={};
-        if(req.query?.category){
-            query={category:req.query.category}
-        }
-        const result=await bookCollections.find(query).toArray();
-        res.send(result);
+
+    // Find by filtering by category
+    app.get("/all-books", async (req, res) => {
+      let query = {};
+      if (req.query?.category) {
+        query = { category: req.query.category }
+      }
+      const result = await bookCollections.find(query).toArray();
+      res.send(result);
     })
-    //get single book data
-    app.get("/book/:id",async (req,res)=>{
-      const id=req.params.id;
-      const filter={_id:new ObjectId(id)};
-      const result=await bookCollections.findOne(filter);
+
+    // Get single book data
+    app.get("/book/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await bookCollections.findOne(filter);
       res.send(result);
     })
 
@@ -99,9 +102,6 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-
-
-app.listen(port,()=>{
-    console.log(`The server is running on the port ${port}`)
+app.listen(port, () => {
+  console.log(`The server is running on port ${port}`)
 })
