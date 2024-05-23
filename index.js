@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 const cors = require('cors');
 
 // Middleware
 app.use(cors({
   origin: ['https://mern-book-store-frontend.vercel.app', 'http://localhost:5000', 'http://localhost:5173','https://mern-book-store-backend-1.onrender.com/'],
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  credentials: true,
 }));
 app.use(express.json());
 
